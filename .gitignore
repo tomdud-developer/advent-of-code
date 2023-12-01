@@ -3,7 +3,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .bsp
-
+*/workspace.xml
+.idea/workspace.xml
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
@@ -38,3 +39,4 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/workspace.xml
