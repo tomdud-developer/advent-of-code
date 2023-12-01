@@ -4,7 +4,7 @@ import scala.collection.immutable.Map
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val file = scala.io.Source.fromFile("src/main/resources/day1/sample2.txt")
+    val file = scala.io.Source.fromFile("src/main/resources/day1/input.txt")
 
     def getTextDigit(str: String): Option[Int] = {
       Map(
@@ -31,18 +31,17 @@ object Main {
             getTextDigit(slice)
           }
         })
-        .find(_.isDefined).get.get // not elegant
+        .find(_.isDefined).get.get // not elegant, i think there is a way to do it by pattern matching
 
     def getLastDigit(str: String): Int =
       getSlicesFromEnd(str).map(slice => {
-          println("slice: " + slice)
           if (slice.head.isDigit) {
             Some(slice.head.asDigit)
           } else {
             getTextDigit(slice)
           }
         })
-        .find(_.isDefined).get.get // not elegant
+        .find(_.isDefined).get.get // not elegant, i think there is a way to do it by pattern matching
 
 
     val result = file.getLines().map(line => {
