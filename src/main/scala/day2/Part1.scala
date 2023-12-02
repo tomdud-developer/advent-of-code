@@ -3,7 +3,7 @@ package day2
 import scala.Option.option2Iterable
 import scala.util.matching.Regex
 
-object Main extends App {
+object Part1 extends App {
 
   val file = scala.io.Source.fromFile("src/main/resources/day2/input1.txt")
   val green = 13
