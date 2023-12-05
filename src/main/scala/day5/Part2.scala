@@ -8,20 +8,17 @@ object Part2 extends App {
   val lines = file.getLines().toList
   val linesBuffer = lines.toBuffer
 
-  val seeds = getSeedsFromBuffer()
+  val seeds = getSeedsFromLine(linesBuffer.remove(0))
   val map = getMapFromBuffer().toMap
 
-  val location = seeds.zipWithIndex.map { case (seed, index) =>
-    println(index)
-    convertSeedToLocationBasedOnMap(seed)
-  }.min
+  val location = seeds.map(convertSeedToLocationBasedOnMap).min
 
-  print(location)
+  print(s"min location = $location")
 
-  private def getSeedsFromBuffer(): Iterator[Long] = {
-    linesBuffer.remove(0).split(":")(1).trim.split(" ")
+  private def getSeedsFromLine(line: String): Iterator[Long] = {
+    line.split(":")(1).trim.split(" ")
       .map(_.toLong)
-      .sliding(2, 2).flatMap(arr => arr(0) to arr(1))
+      .sliding(2, 2).flatMap(arr => arr(0) to arr(0) + arr(1) -1)
   }
 
   private def getMapFromBuffer(): mutable.Map[Long, List[Converter]]  = {
@@ -44,23 +41,14 @@ object Part2 extends App {
   }
 
   private def convertSeedToLocationBasedOnMap(seed: Long): Long = {
+    println(seed)
     (1L to map.size.toLong).fold(seed)(
       (valueToConvert, mapperIndex) => {
-        //println(s"Converting using mapper ${mapperIndex} for $valueToConvert")
-        convertByConverters(valueToConvert, map(mapperIndex))
+        map(mapperIndex).find(c => c.sourceRangeStart to c.sourceRangeStart + c.range contains valueToConvert)
+          .map(c => valueToConvert + (c.destinationRangeStart - c.sourceRangeStart))
+          .getOrElse(valueToConvert)
       }
     )
-  }
-
-  private def convertByConverters(valueToConvert: Long, converters: List[Converter]): Long = {
-    //println(s"Using converters $converters")
-    converters.find(
-        c => c.sourceRangeStart to c.sourceRangeStart + c.range contains valueToConvert
-      ).map(c => {
-        //println(s"Founded converter $c and using it on value $valueToConvert")
-        valueToConvert + (c.destinationRangeStart - c.sourceRangeStart)
-      })
-      .getOrElse(valueToConvert)
   }
 
   case class Converter(
