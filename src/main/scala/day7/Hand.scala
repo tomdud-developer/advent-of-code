@@ -4,7 +4,12 @@ import day7.HandType.{FIVE_OF_A_KIND, FOUR_OF_A_KIND, FULL_HOUSE, HIGH_CARD, Han
 
 object Hand {
   def mapCardsToType(cards: Array[Char]): HandType = {
-    val sortedCounts = cards.groupBy(identity).map(_._2.length).toArray.sorted.reverse
+    val cardsWithoutJokers = cards.filter(!_.equals('J'))
+    val jokerCount = cards.length - cardsWithoutJokers.length
+    if (jokerCount == 5) return FIVE_OF_A_KIND
+    val sortedCounts = cardsWithoutJokers.groupBy(identity).map(_._2.length).toArray.sorted.reverse
+    sortedCounts.update(0, sortedCounts(0) + jokerCount)
+
     sortedCounts match {
       case Array(5) => FIVE_OF_A_KIND
       case Array(4, 1) => FOUR_OF_A_KIND
@@ -13,11 +18,13 @@ object Hand {
       case Array(2, 2, 1) => TWO_PAIR
       case Array(2, 1, 1, 1) => ONE_PAIR
       case Array(1, 1, 1, 1, 1) => HIGH_CARD
-      case _ => throw new IllegalStateException(s"Hand ${cards.mkString("Array(", ", ", ")")} not recognized")
+      case _ => throw new IllegalStateException(s"Hand ${cards.mkString("Array(", ", ", ")")} not recognized. " +
+        s"Pattern array: ${sortedCounts.mkString("Array(", ", ", ")")}")
     }
   }
 
-  private val cardValues = Seq('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2')
+  private val cardValues = Seq('A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J')
+
   val cardValuesMap: Map[Char, Int] = cardValues.zipWithIndex.map {
     case (card, index) => (card, cardValues.length - index)
   }.toMap
