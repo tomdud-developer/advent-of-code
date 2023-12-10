@@ -21,7 +21,6 @@ object Main extends App {
       .map(historySeqHeads => historySeqHeads.reverse.fold(0L)((acc, h) => h - acc)).sum
 
     println(result)
-
   }
 
 
